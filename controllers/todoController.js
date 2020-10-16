@@ -1,23 +1,39 @@
 let bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+ 
+const dbURI = "mongodb+srv://admin:test1234test@todolist.txdig.mongodb.net/toDoList?retryWrites=true&w=majority";
+mongoose.connect(dbURI, {useUnifiedTopology: true, useNewUrlParser: true})
+    .then((result) => console.log('connected to db'))
+    .catch((err) => console.log(err));
 
-let data = [{item: 'get milk'}, {item: 'walk dog'}, {item: 'code'}];
+const todoSchema = new mongoose.Schema({
+    item: String
+});
+
+const Todo = mongoose.model('todo', todoSchema);
+
 let urlencodedParser = bodyParser.urlencoded({extended: false});
 
 module.exports = function(app){
 
     app.get('/todo', function(req,res){
-        res.render('todo', {todos: data});
+        Todo.find({}, function(err, data){
+            if (err) throw err;
+            res.render('todo', {todos: data});
+        });
     });
 
     app.post('/todo', urlencodedParser, function(req,res){
-        data.push(req.body);
-        res.json({todos: data})
+        const newTodo = Todo(req.body).save(function(err, data){
+            if (err) throw err;
+            res.json(data);
+        });
     });
 
     app.delete('/todo/:item', function(req,res){
-        data = data.filter(function(todo){
-            return todo.item.replace(/ /g, '-') !== req.params.item;
+        Todo.find({item: req.params.item.replace(/\-/g, " ")}).deleteOne(function(err, data){
+            if (err) throw err;
+            res.json(data);
         });
-        res.json({data});
     });
 }

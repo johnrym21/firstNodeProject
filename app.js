@@ -1,5 +1,5 @@
-letlet express = require('express');
-letlet todoController = require('./controllers/todoController');
+let express = require('express');
+let todoController = require('./controllers/todoController');
 
 let app = express();
 
