@@ -1,6 +1,6 @@
 let bodyParser = require('body-parser');
 const mongoose = require('mongoose');
- 
+
 const dbURI = "mongodb+srv://admin:test1234test@todolist.txdig.mongodb.net/toDoList?retryWrites=true&w=majority";
 mongoose.connect(dbURI, {useUnifiedTopology: true, useNewUrlParser: true})
     .then((result) => console.log('connected to db'))
@@ -10,7 +10,7 @@ const todoSchema = new mongoose.Schema({
     item: String
 });
 
-const Todo = mongoose.model('todo', todoSchema);
+const Todo = mongoose.model( 'todo', todoSchema);
 
 let urlencodedParser = bodyParser.urlencoded({extended: false});
 
